@@ -1,5 +1,7 @@
 library cart_stepper;
 
+import 'dart:async';
+import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:flutter/cupertino.dart';
@@ -66,6 +68,7 @@ class _CartStepperState<VM extends num> extends State<CartStepper<VM>> {
   bool _editMode = false;
   String lastText = '';
   late final TextEditingController _controller;
+  Timer _timer = Timer(const Duration(milliseconds: 100), (() {}));
   late final FocusNode _focusNode = FocusNode()
     ..addListener(() {
       if (_editMode && !_focusNode.hasFocus) {
@@ -140,6 +143,21 @@ class _CartStepperState<VM extends num> extends State<CartStepper<VM>> {
         onTap: () {
           _buttonSetValue((widget._value + widget._stepper) as VM);
         },
+        onTapDown: (TapDownDetails details) {
+          log('down');
+          _timer = Timer.periodic(const Duration(milliseconds: 100), (t) {
+            _buttonSetValue((widget._value + widget._stepper) as VM);
+            log('value ${widget._value}');
+          });
+        },
+        onTapUp: (TapUpDetails details) {
+          log('up');
+          _timer.cancel();
+        },
+        onTapCancel: () {
+          log('cancel');
+          _timer.cancel();
+        },
         child: SizedBox(
           width: isVertical ? widget.size : null,
           height: isVertical ? null : widget.size,
@@ -161,12 +179,12 @@ class _CartStepperState<VM extends num> extends State<CartStepper<VM>> {
       childs.add(
         GestureDetector(
           onTap: () {
-            setState(() {
+            /*  setState(() {
               lastText = widget._value.toString();
               _controller.text = lastText;
               _editMode = !_editMode;
               _focusNode.requestFocus();
-            });
+            }); */
           },
           behavior: HitTestBehavior.opaque,
           child: Container(
@@ -214,6 +232,25 @@ class _CartStepperState<VM extends num> extends State<CartStepper<VM>> {
             _buttonSetValue(math.max((widget._value - widget._stepper),
                     VM is int ? defaultValue.toInt() : defaultValue.toDouble())
                 as VM);
+          },
+          onTapDown: (TapDownDetails details) {
+            log('down');
+            _timer = Timer.periodic(const Duration(milliseconds: 100), (t) {
+              _buttonSetValue(math.max(
+                  (widget._value - widget._stepper),
+                  VM is int
+                      ? defaultValue.toInt()
+                      : defaultValue.toDouble()) as VM);
+              log('value ${widget._value}');
+            });
+          },
+          onTapUp: (TapUpDetails details) {
+            log('up');
+            _timer.cancel();
+          },
+          onTapCancel: () {
+            log('cancel');
+            _timer.cancel();
           },
           child: SizedBox(
             width: isVertical ? widget.size : null,
