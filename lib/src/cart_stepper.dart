@@ -164,12 +164,8 @@ class _CartStepperState<VM extends num> extends State<CartStepper<VM>> {
           child: AspectRatio(
             aspectRatio: isExpanded ? style.buttonAspectRatio : 1,
             child: Center(
-              child: Icon(
-                style.iconPlus ?? CupertinoIcons.add,
-                color: isExpanded
-                    ? style.activeForegroundColor
-                    : style.foregroundColor,
-              ),
+              child: Icon(style.iconPlus ?? CupertinoIcons.add,
+                  color: style.activeForegroundColor),
             ),
           ),
         ),
@@ -312,7 +308,7 @@ class _CartStepperState<VM extends num> extends State<CartStepper<VM>> {
       shape: style.shape,
       borderRadius: borderRadius,
       shadowColor: style.shadowColor ?? const Color.fromARGB(255, 0, 0, 0),
-      color: isExpanded ? style.activeBackgroundColor : style.backgroundColor,
+      color: style.activeBackgroundColor,
       elevation: widget.elevation ?? style.elevation,
       child: isVertical
           ? Column(
